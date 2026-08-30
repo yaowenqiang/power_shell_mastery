@@ -209,6 +209,28 @@
 
 > (get-childItem hi)| Get-Member -MemberType method
 
+> stop-process -name notepad
+
+> get-process -name notepad | stop-process
+
+> Get-ChildItem | Measure-Object
+
+> Get-ChildItem | Measure-Object -Property Length -sum
+
+> Get-ChildItem | Measure-Object -Property Length -Average -Maximum -Minimum
+
+> Get-Process | Sort-Object cpu -Descending
+
+
+> Get-Process | Sort-Object CPU -Descending | Select-Object -first 5
+
+
+> Get-Process | Sort-Object WorkingSet -Descending
+
+> Get-Process | Sort-Object StartTime -Descending | Select-Object -first 5 Name,CPU, StartTime
+
+
+
 
 
 
