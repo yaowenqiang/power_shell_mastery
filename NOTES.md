@@ -162,10 +162,52 @@
 
 > expand-Archive -Path smaller_file.zip  -destination new_path
 
-
 > only support zip format
 
+> get-process | get-member
 
+> get-childitem ./hello | get-member 
+
+> (get-childitem ./hello).lastAccessTime 
+
+> (get-childitem ./hello).CreationTime
+
+> stat -x filename # mac 
+
+> eza -l --icons NOTES.md
+
+> (Get-Process).StartTime
+
+> (Get-Process).cpu
+
+> (Get-Process).WorkingSet(memory bytes)
+
+> (Get-Process).workingset / 1024 / 1024 / 1024
+
+> (Get-Process).workingset / 1MB
+
+> (Get-ChildItem file).LastWriteTime = '01/01/2026'
+
+> (Get-ChildItem hi).LastWriteTime = [datetime]"01/01/2026"
+
+> (Get-ChildItem hi).LastWriteTime = [datetime]"2026-01-11"
+
+> (Get-ChildItem hi).LastWriteTime = [datetime]::ParseExact("01/01/2025", "MM/dd/yyyy", $null)
+
+> https://learn.microsoft.com/en-us/dotnet/api/system.datetime.parseexact?view=net-10.0
+
+
+> (Get-ChildItem hi).CreationTime = [datetime]"01/01/2026"
+
+> (Get-ChildItem hi).CreationTime = [datetime]::ParseExact("01/01/2026 09:30:00", "MM/dd/yyyy HH:mm:ss", $null)
+
+> (get-process notepad).kill()
+
+> (get-childItem hi).CopyTo('/hello')
+
+> (get-childItem hi).Delete()
+
+> (get-childItem hi)| Get-Member -MemberType method
 
 
 
