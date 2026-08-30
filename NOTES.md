@@ -103,3 +103,73 @@
 
 > touch "./test`n`t'`" file.txt"
 
+> New-Item -ItemType SymbolicLink -Path ./e -Target a
+
+> no change SymbolicLink method directly, you should remove the old one and create the new one
+
+> if the target was renamed or deleted,the symlink will broken
+
+> 在 Linux 系统中，符号链接（symlink）的嵌套层数是40
+
+> 在 Windows 上，这个限制通常是 63 层
+
+> new-item -path originalfile.txt -ItemType file -value "this is original file"
+
+> new-item -path hardlink.txt -ItemType HardLink   -Target ./originalfile.txt
+
+> get-content file1,file2
+
+> get-content filename -TotalCount 3
+
+> get-content filename -Tail 3
+
+> set-content filepath -value "hello,newcontent"
+
+> add-content filepath -value "hello,newcontent"
+
+> get-date -format 'yyyy-MM-dd'
+
+> add-content a -value "hi, $(Get-Date -Format 'yyyy-MM-dd')"
+
+> Move-Item -path a  -Destination aaa
+
+> copy-Item -path aaa  -Destination aaaa
+
+> copy-Item aaa aaaa
+
+
+> Rename-Item -Path ./aaa  -NewName bb
+
+> Rename-Item bb cc
+
+> Remove-Item -Path aaaa
+
+> Remove-Item d
+
+> Remove-Item d  -recurse
+
+> Remove-Item d  -force
+
+> 1..100000 | ForEach-Object {"this is line $_ of a large , compressible file. It contains repetitive text to ensure good compression."} | out-file -FilePath big_file.txt
+
+> Compress-Archive -Path ./big_file.txt -DestinationPath smaller_file.zip
+
+> Compress-Archive -Path file1,file2,file3 -DestinationPath smaller_file.zip
+
+> Compress-Archive -Path file1,file2,file3 -DestinationPath smaller_file.zip -Update
+
+> expand-Archive -Path smaller_file.zip 
+
+> expand-Archive -Path smaller_file.zip  -destination new_path
+
+
+> only support zip format
+
+
+
+
+
+
+
+
+
