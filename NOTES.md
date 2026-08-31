@@ -229,11 +229,30 @@
 
 > Get-Process | Sort-Object StartTime -Descending | Select-Object -first 5 Name,CPU, StartTime
 
+> Get-Process | Format-Table Name,Id,cpu
+
+> Get-Process | Format-list
+
+> get-process | Format-Wide
+
+> get-process | Format-Wide -column 2
+
+> get-service | Format-Wide name, status, starttype
+
+> get-process chrome | format-list *
+
+> get-childitem | format-wide name -column 3
+
+> get-process | sort-object cpu -Descending | Select-Object -first 5 | format-table name, id,cpu
+
+> always put your formatting commandlets at the end of your pipeline
 
 
+> get-service | sort-object status | Select-Object -first 10 | format-list name,status,starttype
 
+> get-service | sort-object status | Select-Object -first 10 | format-list name,status,starttype
 
+> get-service | sort-object status | Select-Object -first 10 | format-table name,status,starttype
 
-
-
+> get-service | sort-object status | Select-Object -first 10 | format-table name,status,starttype -autosize
 
