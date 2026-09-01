@@ -256,3 +256,39 @@
 
 > get-service | sort-object status | Select-Object -first 10 | format-table name,status,starttype -autosize
 
+
+> get-process | sort-object cpu -Descending | Select-Object -first 10 | out-gridview
+
+> get-process | sort-object cpu -Descending | Select-Object -first 10 | out-file process.txt
+
+> get-process | Tee-object -Filepath "process.txt" | out-gridview
+
+> get-service | sort-object status | select-object -first 10 | Tee-object -Filepath "service.txt" | out-gridview
+
+> get-process | sort-object WorkingSet -Descending | select-object -first 20 | ConvertTo-html
+
+
+> Get-ChildItem | Group-Object Extension
+
+> Get-ChildItem | Group-Object Extension | sort-object name
+
+
+> get-process | Measure-Object WorkingSet -sum -Average -Maximum -Minimum
+
+> get-process | Measure-Object WorkingSet -sum -Average -Maximum -Minimum
+
+> get-process | Group-Object ProcessName | Measure-Object Count -Average
+
+> Get-ChildItem desktop -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum
+
+> Get-ChildItem  -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum(MB)";Expression={[math]::Round($_.sum / 1MB, 2)}}                    
+
+> Get-ChildItem desktop -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum (MB)";Expression={[math]::Round($_.sum / 1MB, 2)}}, @{Name="Average (MB)";Expression={[math]::Round($_.Average / 1MB, 2)}}
+
+
+> Get-ChildItem  -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum(MB)";Expression={[math]::Round($_.sum / 1MB, 2)}},@{Name="`Average (MB)";Expression={[math]::Round($_.Average / 1MB, 2)}},@{Name="`Maximum(MB)";Expression={[math]::Round($_.Maximum / 1MB, 2)}},
+@{Name="`Minimum(MB)";Expression={[math]::Round($_.Minimum / 1MB, 2)}}
+
+> get-childitem Desktop | -File -Recurse | Group-Object Extension | select-object name, Count | Sort-Object count =Descending
+
+
