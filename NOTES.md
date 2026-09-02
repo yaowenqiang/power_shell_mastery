@@ -289,6 +289,12 @@
 > Get-ChildItem  -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum(MB)";Expression={[math]::Round($_.sum / 1MB, 2)}},@{Name="`Average (MB)";Expression={[math]::Round($_.Average / 1MB, 2)}},@{Name="`Maximum(MB)";Expression={[math]::Round($_.Maximum / 1MB, 2)}},
 @{Name="`Minimum(MB)";Expression={[math]::Round($_.Minimum / 1MB, 2)}}
 
-> get-childitem Desktop | -File -Recurse | Group-Object Extension | select-object name, Count | Sort-Object count =Descending
+> get-childitem Desktop -File -Recurse | Group-Object Extension | select-object name, Count | Sort-Object count -Descending
 
+> get-childitem / -File -Recurse | Group-Object Extension | select-object name, Count, @{name="TotalSize(MB)";Expression={($_.Group | Measure-Object Length -sum).Sum / 1MB -as [int]}}
+
+> get-childitem / -File -Recurse | Group-Object Extension | select-object name, Count, @{name="TotalSize(MB)";Expression={($_.Group | Measure-Object Length -sum).Sum / 1MB -as [int]}} | Sort-Object "TotalSize(MB)"
+
+
+> pwsh hello.ps1
 
