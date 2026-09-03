@@ -298,3 +298,24 @@
 
 > pwsh hello.ps1
 
+> $PSVersionTable
+
+> $PWD
+
+> $HOME
+
+```ps1
+    $server = "192.168.1.1"
+    Test-Connection -ComputerName $server -Count 1
+    Invoke-Command -ComputerName $server -ScriptBlock {Get-Process}
+    Restart-Computer -ComputerName $server  -Force
+    $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+    #$myfile = "Desktop\myawesomefile.txt"
+    $myfile = "Desktop\myawesomefile_$timestamp.txt"
+    new-item -Path $myfile -ItemType File
+    add-content -Path $myfile -Value "PowerShell, so cool `nVariables make life easy `nScripting is my jam"
+
+
+
+```
+
