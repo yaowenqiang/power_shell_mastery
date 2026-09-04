@@ -319,3 +319,19 @@
 
 ```
 
+```ps1
+$appName = Read-Host "Enter the name of the application"
+#$appName = "myAwesomeApp"
+$appDataDir = "${appName}_Data"
+
+New-item $appDataDir -ItemType "Directory"
+
+New-Item -Path "$appDataDir\config.txt" -ItemType "File"
+
+Add-Content -Path "$appDataDir\config.txt" -Value "Hello, this is a configuration file for the $appName app."
+
+Get-ChildItem $appDataDir
+
+Get-Content -Path "$appDataDir\config.txt"
+
+```
