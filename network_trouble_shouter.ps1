@@ -5,13 +5,14 @@ Write-Host "3. Flush DNS"
 Write-Host "4. Port Scan"
 Write-Host "5. Exit"
 
-$choice = Read-Host "Enter your choice"
+$choice = Read-Host "Enter your choice (1-5)"
 
 switch ($choice) {
     1 {
         Write-Host "Checking Internet Connection..."
-        $testREsult = Test-Connection -ComputerName baidu.com -Count 1 -Quiet
-        if ($testREsult -eq "True") {
+        # -TargetName + -Quiet work on all platforms (pwsh 6+)
+        $testResult = Test-Connection -TargetName baidu.com -Count 1 -Quiet
+        if ($testResult) {
             Write-Host "Internet connection is working."
         }
         else {
@@ -20,21 +21,50 @@ switch ($choice) {
     }
     2 {
         Write-Host "Viewing IP Configuration..."
-        $ipAddress = (Get-NetIPConfiguration).IPv4Address.IPAddress
-        $defaultGateway = (Get-NetIPConfiguration).IPv4DefaultGateway.NextHop
+        if ($IsMacOS) {
+            # find the interface used by the default route, then ask for its IP
+            $routeInfo = route -n get default
+            $interface = [regex]::Match($routeInfo, 'interface:\s+(\S+)').Groups[1].Value
+            $ipAddress = ipconfig getifaddr $interface
+            $defaultGateway = [regex]::Match($routeInfo, 'gateway:\s+(\S+)').Groups[1].Value
+        }
+        elseif ($IsLinux) {
+            $ipAddress = (hostname -I).Trim().Split(' ')[0]
+            $defaultGateway = [regex]::Match((ip route show default), 'via\s+(\S+)').Groups[1].Value
+        }
+        else {
+            $netConfig = Get-NetIPConfiguration
+            $ipAddress = $netConfig.IPv4Address.IPAddress
+            $defaultGateway = $netConfig.IPv4DefaultGateway.NextHop
+        }
         Write-Host "IP Address: $ipAddress"
         Write-Host "Default Gateway: $defaultGateway"
     }
     3 {
-        Clear-DnsClientCache
+        if ($IsMacOS) {
+            # macOS flushes DNS via the mDNSResponder daemon, requires admin password
+            sudo dscacheutil -flushcache
+            sudo killall -HUP mDNSResponder
+        }
+        elseif ($IsLinux) {
+            resolvectl flush-caches 2>$null
+            if ($LASTEXITCODE -ne 0) { systemd-resolve --flush-caches }
+        }
+        else {
+            Clear-DnsClientCache
+        }
         Write-Host "DNS cache has been flushed."
-
     }
     4 {
         Write-Host "Performing Port Scan..."
-        $ip = Read-Host "Enter the IP address to scan"
+        $ip = Read-Host "Enter the IP address or host to scan"
         $port = Read-Host "Enter the port number to scan"
-        Test-Connection -ComputerName $ip -Port $port
+        if (Test-Connection -TargetName $ip -TcpPort $port -Quiet) {
+            Write-Host "Port $port on $ip is open."
+        }
+        else {
+            Write-Host "Port $port on $ip is closed or unreachable."
+        }
     }
     5 {
         Write-Host "Exiting..."
@@ -44,9 +74,10 @@ switch ($choice) {
         Write-Host "Invalid choice. Please try again."
     }
 }
+
 $filename = "document.docs"
 
-switch -Wildcard ($filename) { 
+switch -Wildcard ($filename) {
     "*.docx" { Write-Host "This is a Word document." }
     "*.xlsx" { Write-Host "This is an Excel document." }
     "*.pptx" { Write-Host "This is a PowerPoint document." }
