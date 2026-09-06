@@ -1,6 +1,5 @@
 > Get-Process | Sort-Object CPU -Descending | Select-Object -first 5
 
-
 > Get-Host
 
 > Get-Date
@@ -14,7 +13,6 @@
 > Get-Content
 
 > Get-History (h)
-
 
 ## parameters
 
@@ -84,7 +82,7 @@
 
 > Get-ChildItem
 
-> set-location 
+> set-location
 
 > push-location
 
@@ -92,7 +90,7 @@
 
 > new-item -path desk/new_file.txt -itemType "file"
 
-> new-item -path desk/new_file.txt 
+> new-item -path desk/new_file.txt
 > new-item hello` world
 
 > new-item "hello world"
@@ -137,7 +135,6 @@
 
 > copy-Item aaa aaaa
 
-
 > Rename-Item -Path ./aaa  -NewName bb
 
 > Rename-Item bb cc
@@ -158,7 +155,7 @@
 
 > Compress-Archive -Path file1,file2,file3 -DestinationPath smaller_file.zip -Update
 
-> expand-Archive -Path smaller_file.zip 
+> expand-Archive -Path smaller_file.zip
 
 > expand-Archive -Path smaller_file.zip  -destination new_path
 
@@ -166,13 +163,13 @@
 
 > get-process | get-member
 
-> get-childitem ./hello | get-member 
+> get-childitem ./hello | get-member
 
-> (get-childitem ./hello).lastAccessTime 
+> (get-childitem ./hello).lastAccessTime
 
 > (get-childitem ./hello).CreationTime
 
-> stat -x filename # mac 
+> stat -x filename # mac
 
 > eza -l --icons NOTES.md
 
@@ -195,7 +192,6 @@
 > (Get-ChildItem hi).LastWriteTime = [datetime]::ParseExact("01/01/2025", "MM/dd/yyyy", $null)
 
 > https://learn.microsoft.com/en-us/dotnet/api/system.datetime.parseexact?view=net-10.0
-
 
 > (Get-ChildItem hi).CreationTime = [datetime]"01/01/2026"
 
@@ -221,9 +217,7 @@
 
 > Get-Process | Sort-Object cpu -Descending
 
-
 > Get-Process | Sort-Object CPU -Descending | Select-Object -first 5
-
 
 > Get-Process | Sort-Object WorkingSet -Descending
 
@@ -247,7 +241,6 @@
 
 > always put your formatting commandlets at the end of your pipeline
 
-
 > get-service | sort-object status | Select-Object -first 10 | format-list name,status,starttype
 
 > get-service | sort-object status | Select-Object -first 10 | format-list name,status,starttype
@@ -255,7 +248,6 @@
 > get-service | sort-object status | Select-Object -first 10 | format-table name,status,starttype
 
 > get-service | sort-object status | Select-Object -first 10 | format-table name,status,starttype -autosize
-
 
 > get-process | sort-object cpu -Descending | Select-Object -first 10 | out-gridview
 
@@ -267,11 +259,9 @@
 
 > get-process | sort-object WorkingSet -Descending | select-object -first 20 | ConvertTo-html
 
-
 > Get-ChildItem | Group-Object Extension
 
 > Get-ChildItem | Group-Object Extension | sort-object name
-
 
 > get-process | Measure-Object WorkingSet -sum -Average -Maximum -Minimum
 
@@ -281,20 +271,17 @@
 
 > Get-ChildItem desktop -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum
 
-> Get-ChildItem  -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum(MB)";Expression={[math]::Round($_.sum / 1MB, 2)}}                    
+> Get-ChildItem  -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum(MB)";Expression={[math]::Round($_.sum / 1MB, 2)}}
 
 > Get-ChildItem desktop -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum (MB)";Expression={[math]::Round($_.sum / 1MB, 2)}}, @{Name="Average (MB)";Expression={[math]::Round($_.Average / 1MB, 2)}}
 
-
-> Get-ChildItem  -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum(MB)";Expression={[math]::Round($_.sum / 1MB, 2)}},@{Name="`Average (MB)";Expression={[math]::Round($_.Average / 1MB, 2)}},@{Name="`Maximum(MB)";Expression={[math]::Round($_.Maximum / 1MB, 2)}},
-@{Name="`Minimum(MB)";Expression={[math]::Round($_.Minimum / 1MB, 2)}}
+> Get-ChildItem  -File -Recurse  | Measure-Object length -sum -Average -Maximum -Minimum | Select-Object Count, @{Name="Sum(MB)";Expression={[math]::Round($_.sum / 1MB, 2)}},@{Name="`Average (MB)";Expression={[math]::Round($_.Average / 1MB, 2)}},@{Name="`Maximum(MB)";Expression={[math]::Round($_.Maximum / 1MB, 2)}}, @{Name="`Minimum(MB)";Expression={[math]::Round($_.Minimum / 1MB, 2)}}
 
 > get-childitem Desktop -File -Recurse | Group-Object Extension | select-object name, Count | Sort-Object count -Descending
 
 > get-childitem / -File -Recurse | Group-Object Extension | select-object name, Count, @{name="TotalSize(MB)";Expression={($_.Group | Measure-Object Length -sum).Sum / 1MB -as [int]}}
 
 > get-childitem / -File -Recurse | Group-Object Extension | select-object name, Count, @{name="TotalSize(MB)";Expression={($_.Group | Measure-Object Length -sum).Sum / 1MB -as [int]}} | Sort-Object "TotalSize(MB)"
-
 
 > pwsh hello.ps1
 
@@ -314,9 +301,6 @@
     $myfile = "Desktop\myawesomefile_$timestamp.txt"
     new-item -Path $myfile -ItemType File
     add-content -Path $myfile -Value "PowerShell, so cool `nVariables make life easy `nScripting is my jam"
-
-
-
 ```
 
 ```ps1
@@ -333,5 +317,4 @@ Add-Content -Path "$appDataDir\config.txt" -Value "Hello, this is a configuratio
 Get-ChildItem $appDataDir
 
 Get-Content -Path "$appDataDir\config.txt"
-
 ```
