@@ -2,14 +2,14 @@ $userInput = Read-Host "Enter a number"
 
 if ($userInput -as [int] ) {
     write-host "$($userInput -as [int]) "
-    write-host "Good job! you entered a vaild number." 
+    write-host "Good job! you entered a valid number." 
 }
 else {
     write-host "try again! you didn't enter a number."
 }
 
 if ($userInput -match "^\d+$") {
-    write-host "Good job! you entered a vaild number."
+    write-host "Good job! you entered a valid number."
 }
 else {
     write-host "try again! you didn't enter a number."  
@@ -17,7 +17,7 @@ else {
 $userInput = 42
 
 if ($userInput -is [int]) {
-    write-host "Good job! you entered a vaild number."
+    write-host "Good job! you entered a valid number."
 }
 else {
     write-host "try again! you didn't enter a number."  
@@ -26,7 +26,7 @@ else {
 $userInput = "42"
 
 if ($userInput -is [int]) {
-    write-host "Good job! you entered a vaild number."
+    write-host "Good job! you entered a valid number."
 }
 else {
     write-host "try again! you didn't enter a number."  
