@@ -36,11 +36,14 @@ else {
 if ($IsMacOS) {
     # hw.memsize is bytes, / 1GB converts to GB
     $totalMemory = [long](sysctl -n hw.memsize) / 1GB
-    # vm_stat reports free memory in pages, page size varies (16KB on Apple Silicon)
-    $vmStat = vm_stat
-    $pageSize = [long]([regex]::Match($vmStat[0], 'page size of (\d+) bytes').Groups[1].Value)
-    $freePages = [long]((([regex]::Match(($vmStat | Select-String 'Pages free'), '([\d,]+)').Groups[1].Value)) -replace ',', '')
-    $freeMemory = $freePages * $pageSize / 1GB
+    # "free" alone is almost always near zero on macOS because spare RAM is
+    # used as file cache. Activity Monitor counts free + purgeable +
+    # speculative pages as available, since all can be reclaimed instantly.
+    $pageSize = [long](sysctl -n hw.pagesize)
+    $freePages = [long](sysctl -n vm.page_free_count)
+    $purgeablePages = [long](sysctl -n vm.page_purgeable_count)
+    $speculativePages = [long](sysctl -n vm.page_speculative_count)
+    $freeMemory = ($freePages + $purgeablePages + $speculativePages) * $pageSize / 1GB
 }
 elseif ($IsLinux) {
     $totalMemory = [long]((Get-Content /proc/meminfo | Where-Object { $_ -like 'MemTotal*' }) -replace '\D', '') / 1MB
@@ -72,7 +75,7 @@ $report += "Computer Name: {0} `n" -f $computerName
 $report += "OS Name: {0} `n" -f $osName
 $report += "OS Version: {0} `n" -f $osVersion
 $report += "CPU Usage: {0}% `n" -f $cpu
-$report += "Memory: {0:N2} GB free of {1:N2} GB `n" -f $freeMemory, $totalMemory
+$report += "Memory: {0:N2} GB available of {1:N2} GB `n" -f $freeMemory, $totalMemory
 $report += "$diskLabel {0:N2} GB free of {1:N2} GB `n" -f $freeSpace, $totalSpace
 
 $memoryUsagePercent = 100 - (($freeMemory / $totalMemory) * 100)
