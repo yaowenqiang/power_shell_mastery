@@ -16,6 +16,22 @@ else {
     $osVersion = $osInfo.Version
 }
 
+# --- Uptime ---
+if ($IsMacOS) {
+    # kern.boottime reports the boot time as an epoch timestamp
+    $bootSec = [long]([regex]::Match((sysctl -n kern.boottime), 'sec = (\d+)').Groups[1].Value)
+    $bootTime = [datetimeoffset]::FromUnixTimeSeconds($bootSec).LocalDateTime
+}
+elseif ($IsLinux) {
+    # the first value in /proc/uptime is seconds since boot
+    $upSec = [double]((Get-Content /proc/uptime).Split()[0])
+    $bootTime = (Get-Date).AddSeconds(-$upSec)
+}
+else {
+    $bootTime = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+}
+$uptime = (Get-Date) - $bootTime
+
 # --- CPU usage ---
 if ($IsMacOS) {
     # top reports how much was idle, usage is the rest
@@ -74,6 +90,7 @@ $report += "Generated On {0:yyyy-MM-dd HH:mm:ss} `n`n" -f (Get-Date)
 $report += "Computer Name: {0} `n" -f $computerName
 $report += "OS Name: {0} `n" -f $osName
 $report += "OS Version: {0} `n" -f $osVersion
+$report += "Uptime: {0} days, {1} hours, {2} minutes `n" -f $uptime.Days, $uptime.Hours, $uptime.Minutes
 $report += "CPU Usage: {0}% `n" -f $cpu
 $report += "Memory: {0:N2} GB available of {1:N2} GB `n" -f $freeMemory, $totalMemory
 $report += "$diskLabel {0:N2} GB free of {1:N2} GB `n" -f $freeSpace, $totalSpace
