@@ -2,14 +2,24 @@ function Check-ServiceStatus {
     param($serviceName)
     $service = Get-Service -Name $serviceName
     if ($service.Status -eq "Stopped") {
-        Write-Host "Windows Update Service is stopped, Attempting to start..."
-        Start-Service -Name $serviceName
+        return $false
     }
     else {
-        Write-Host "$serviceName service is running, No action needed."
+        return $true
     }
-    
 }
 
-Check-ServiceStatus -serviceName "wuauserv"
-Check-ServiceStatus -serviceName "windefend"
+if (Check-ServiceStatus -serviceName "wuauserv") {
+    Write-Host "Windows Update Service is running."
+}
+else {
+    Write-Host "Windows Update Service is stopped,Attempting to start ..."
+    Start-Service -Name "wuauserv"
+}
+if (Check-ServiceStatus -serviceName "windefend") {
+    Write-Host "Windows Defender Service is running, Attempting to stop ..."
+    #Stop-Service -Name "windefend"
+}
+else {
+    Write-Host "Windows Defender Service is stopped."
+}
