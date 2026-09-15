@@ -15,8 +15,8 @@ if (test-path $countFile) {
     }
 }
 else {
-    Write-Host "The file $countFile does not exist. Creating it now."   
-    $global:scriptRunCount = [int](Get-Content $countFile)
+    Write-Host "The file $countFile does not exist. Creating it now."
+    $global:scriptRunCount = 0
 }
 $global:scriptRunCount++
 
