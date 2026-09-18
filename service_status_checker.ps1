@@ -2,19 +2,23 @@ param (
     [string]$status = "all"
 )
 
-$service = Get-Service
+$services = Get-Service
 
 $runningServices = 0
 
 $stoppedServices = 0
 
-foreach ($service in $service) {
-    if ($status -eq 'all' -or $service.Status -eq $service) {
-        Write-Host "Service Name: $($service.Name), Status: $($service.Status)"
+foreach ($service in $services) {
+    # count every service first, independent of the display filter
+    if ($service.Status -eq "Running") {
         $runningServices++
     }
     elseif ($service.Status -eq "Stopped") {
         $stoppedServices++
+    }
+
+    if ($status -eq 'all' -or $service.Status -eq $status) {
+        Write-Host "Service Name: $($service.Name), Status: $($service.Status)"
     }
 }
 
