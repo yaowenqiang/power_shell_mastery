@@ -10,11 +10,12 @@ $successfulPing = $false
 
 for ($i = 1; $i -le $maxAttempts; $i++) {
     $timeout = $i * 1
-    Write-Host "attempt $attempt with timout $timeout s"
-    $result = Test-Connection -ComputerName $server -Count 1 -Quiet -TimeoutSeconds $timeout -ErrorAction SilentlyContinue
-    if ($result) {
+    Write-Host "attempt $i with timeout $timeout s"
+    # no -Quiet here so we get the full response object with its Latency
+    $response = Test-Connection -TargetName $server -Count 1 -TimeoutSeconds $timeout -ErrorAction SilentlyContinue
+    if ($response -and $response.Status -eq "Success") {
         $successfulPing = $true
-        Write-Host "Success! $($i.latency) ms" -ForegroundColor Green
+        Write-Host "Success! $([math]::Round($response.Latency)) ms" -ForegroundColor Green
         break
     }
     else {
