@@ -2,7 +2,7 @@ $folderPath = "Desktop"
 
 $fileCount = (Get-ChildItem $folderPath).Count
 
-Write-Host "Monitoring filder: $folderPath, initial file count: $fileCount"
+Write-Host "Monitoring folder: $folderPath, initial file count: $fileCount"
 
 While ($true) {
     Start-Sleep -Seconds 5
