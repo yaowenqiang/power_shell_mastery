@@ -15,6 +15,8 @@ foreach ($process in $processes) {
         [void]$memoryHungryProcesses.Add($process)
     }
 }
+$sortedProcesses = $memoryHungryProcesses | Sort-Object -Property WorkingSet -Descending
+
 if ($SearchProcess) {
     Write-Output "`nSearching for process: $SearchProcess   "
     $found = $false
@@ -37,7 +39,6 @@ Write-Output "Memory Intensive Processes Report"
 Write-Output "---------------------------------"
 Write-Output "Total Memory Intensive Processes: $($memoryHungryProcesses.Count)"
 
-$sortedProcesses = $memoryHungryProcesses | Sort-Object -Property WorkingSet -Descending
 # Iterate through each memory hungry process
 foreach ($process in $sortedProcesses) {
     $memoryUsageMB = [math]::Round($process.WorkingSet / 1MB, 2)
