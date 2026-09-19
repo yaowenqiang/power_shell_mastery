@@ -4,14 +4,18 @@ $categoryMap = @{
     ".docx" = "Documents"
     ".pdf"  = "Documents"
     ".jpg"  = "Images"
-    ".png"  = "Documents"
-    ".gif"  = "Documents"
+    ".png"  = "Images"
+    ".gif"  = "Images"
     ".mp3"  = "Audio"
-    ".wav"  = "Documents"
+    ".wav"  = "Audio"
     ".mp4"  = "Videos"
     ".avi"  = "Videos"
     ".zip"  = "Archives"
     ".rar"  = "Archives"
+}
+
+$unknownExtensions = @{
+
 }
 
 # Write-Host $categoryMap['.txt']
@@ -21,7 +25,8 @@ function Move-FileToCategory($file, $category) {
     if (!(Test-path $destinationFolder)) {
         [void](New-Item -Path $destinationFolder -ItemType Directory -WhatIf)
     }
-    $destinationPath = "$destinationFolder/$file"
+    # use .Name: "$file" would interpolate the full path into the destination
+    $destinationPath = "$destinationFolder/$($file.Name)"
     Move-Item -Path $file.FullName -Destination $destinationPath -WhatIf
 
     Write-Host "Moved :$($File.Name) to $Category"
@@ -35,7 +40,22 @@ foreach ($file in Get-ChildItem) {
         Move-FileToCategory $file $categoryMap[$extension]
         $categorizedCount++
     }
+    else {
+        Move-FileToCategory $file 'Miscellaneous'
+        if ($unknownExtensions.ContainsKey($extension)) {
+            $unknownExtensions[$extension]++
+        }
+        else {
+            $unknownExtensions[$extension] = 1
+
+        }
+    }
 }
 
 Write-Host "`nCategorized $categorizedCount file(s)."
 
+Write-Host "`nUnknown file types encountered:"
+
+foreach ($extension in $unknownExtensions.Keys) {
+    Write-Host "$extension : $($unknownExtensions[$extension]) file(s)"
+}
