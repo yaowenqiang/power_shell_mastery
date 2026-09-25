@@ -19,7 +19,7 @@ if (!(Test-Path $archiveFolder)) {
     Write-Host "Created archive folder: $archiveFolder"
 }
 
-# Get files older then 30 days
+# Get files older than 30 days
 
 $oldFiles = [System.Collections.ArrayList]::new()
 
@@ -34,7 +34,8 @@ foreach ($file in Get-ChildItem -Path $sourceFolder -File -ErrorAction SilentlyC
 # Process each file
 
 foreach ($file in $oldFiles) {
-    Compress-Archive -Path $file.FullName -DestinationPath "$archiveFolder\$($file.BaseName).zip" -WhatIf -ErrorAction Stop
+    # Join-Path uses the correct separator on every platform ("\" would break on mac/Linux)
+    Compress-Archive -Path $file.FullName -DestinationPath (Join-Path $archiveFolder "$($file.BaseName).zip") -WhatIf -ErrorAction Stop
 
     Write-Host "Compressed file: $($file.Name)"
 
@@ -47,7 +48,7 @@ foreach ($file in $oldFiles) {
 
 $oldArchivesCount = 0
 $cutoffDate = (Get-Date).AddYears(-1)
-$allFiles = Get-ChildItem -Path ArchiveFolder -File -ErrorAction SilentlyContinue
+$allFiles = Get-ChildItem -Path $archiveFolder -File -ErrorAction SilentlyContinue
 
 foreach ($file in $allFiles) {
     if ($file.LastWriteTime -lt $cutoffDate) {
@@ -60,7 +61,7 @@ foreach ($file in $allFiles) {
 
 # Generate and display summary
 
-$summary = "File Achiving and Cleaning Summary:`n"
+$summary = "File Archiving and Cleaning Summary:`n"
 $summary += "----------------------------------`n"
 $summary += "Files moved to archive: {0}`n" -f $oldFiles.Count
 $summary += "Old archives removed: {0}`n" -f $oldArchivesCount
