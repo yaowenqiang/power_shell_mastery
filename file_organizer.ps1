@@ -23,18 +23,18 @@ $unknownExtensions = @{
 function Move-FileToCategory($file, $category) {
     $destinationFolder = "$PWD/$category" 
     if (!(Test-path $destinationFolder)) {
-        [void](New-Item -Path $destinationFolder -ItemType Directory -WhatIf)
+        [void](New-Item -Path $destinationFolder -ItemType Directory -WhatIf -ErrorAction Stop)
     }
     # use .Name: "$file" would interpolate the full path into the destination
     $destinationPath = "$destinationFolder/$($file.Name)"
-    Move-Item -Path $file.FullName -Destination $destinationPath -WhatIf
+    Move-Item -Path $file.FullName -Destination $destinationPath -WhatIf -ErrorAction Continue
 
     Write-Host "Moved :$($File.Name) to $Category"
 
 }
 
 $categorizedCount = 0
-foreach ($file in Get-ChildItem) {
+foreach ($file in Get-ChildItem -ErrorAction SilentlyContinue) {
     $extension = $file.Extension.ToLower()
     if ($categoryMap.ContainsKey($extension)) {
         Move-FileToCategory $file $categoryMap[$extension]
