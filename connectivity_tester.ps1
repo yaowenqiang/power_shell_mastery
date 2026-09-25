@@ -1,7 +1,7 @@
 for ($i = 1; $i -le 10; $i++) {
     write-Host "$i"
 }
-
+$ErrorActionPreference = "ignore"
 $server = "www.google.com"
 
 $maxAttempts = 5

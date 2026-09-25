@@ -1,3 +1,4 @@
+$ErrorActionPreference = "Stop"
 function Check-ServiceStatus {
     param($serviceName)
     $service = Get-Service -Name $serviceName

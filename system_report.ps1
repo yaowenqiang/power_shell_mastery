@@ -1,5 +1,6 @@
 # works on all platforms ($env:COMPUTERNAME is Windows-only)
 $computerName = [System.Environment]::MachineName
+$errorActionPreference = "SilentlyContinue"
 
 # --- OS info ---
 if ($IsMacOS) {
