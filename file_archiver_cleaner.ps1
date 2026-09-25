@@ -1,7 +1,7 @@
 # Script: Automated File Archiver and Cleaner
 
 # Define paths
-
+$ErrorActionPreference = "Stop"
 $sourceFolder = "Desktop"
 $archiveFolder = "Desktop/Archives"
 
@@ -35,13 +35,25 @@ foreach ($file in Get-ChildItem -Path $sourceFolder -File -ErrorAction SilentlyC
 
 foreach ($file in $oldFiles) {
     # Join-Path uses the correct separator on every platform ("\" would break on mac/Linux)
-    Compress-Archive -Path $file.FullName -DestinationPath (Join-Path $archiveFolder "$($file.BaseName).zip") -WhatIf -ErrorAction Stop
+    # Compress-Archive -Path $file.FullName -DestinationPath (Join-Path $archiveFolder "$($file.BaseName).zip") -WhatIf -ErrorAction Stop
 
-    Write-Host "Compressed file: $($file.Name)"
+    # Write-Host "Compressed file: $($file.Name)"
 
-    # Delete the original (optionally)
-    # Remove-Item -Path $file.FullName -WhatIf
+    try {
+        Compress-Archive -Path $file.FullName -DestinationPath (Join-Path $archiveFolder "$($file.BaseName).zip") -ErrorAction Stop
 
+        Write-Host "Compressed file: $($file.Name)"
+    }
+    catch {
+        Write-Error "Failed to compress file: $($file.Name), Attempting to copy to the archive folder instead"
+        Copy-Item -Path $file.FullName -Destination $archiveFolder
+        Write-Host "Copied file to the archive folder: $($file.Name)"
+    }
+    finally {
+        # Delete the original (optionally)
+        Remove-Item -Path $file.FullName -WhatIf -ErrorAction SilentlyContinue
+        Write-Host "Attempted to delete original file: $($file.Name)"
+    }
 }
 
 # Clean up old archive files (older than 1 year) 
@@ -63,8 +75,8 @@ foreach ($file in $allFiles) {
 
 $summary = "File Archiving and Cleaning Summary:`n"
 $summary += "----------------------------------`n"
-$summary += "Files moved to archive: {0}`n" -f $oldFiles.Count
-$summary += "Old archives removed: {0}`n" -f $oldArchivesCount
+$summary += "Files moved to archive: { 0 }`n" -f $oldFiles.Count
+$summary += "Old archives removed: { 0 }`n" -f $oldArchivesCount
 
 Write-Host $summary
 
