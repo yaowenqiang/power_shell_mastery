@@ -75,8 +75,8 @@ foreach ($file in $allFiles) {
 
 $summary = "File Archiving and Cleaning Summary:`n"
 $summary += "----------------------------------`n"
-$summary += "Files moved to archive: { 0 }`n" -f $oldFiles.Count
-$summary += "Old archives removed: { 0 }`n" -f $oldArchivesCount
+$summary += "Files moved to archive: {0}`n" -f $oldFiles.Count
+$summary += "Old archives removed: {0}`n" -f $oldArchivesCount
 
 Write-Host $summary
 

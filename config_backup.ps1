@@ -23,7 +23,8 @@ catch {
 try {
     $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
     $configObject = Get-ChildItem $configPath
-    $backupPath = "$backupFolder\${$configObject.BaseName}_$timestamp$($configObject.Extension)"
+    # $($expr) evaluates an expression; ${name} would look for a variable literally named that
+    $backupPath = "$backupFolder\$($configObject.BaseName)_$timestamp$($configObject.Extension)"
     Copy-Item -Path $configPath -Destination $backupPath 
     Write-Host "Backup created successfully: $backupPath"
 
