@@ -344,3 +344,6 @@ $Error[0].Exception.Data.Count
 
 
 ```
+
+> $error[0].Exception.InnerException.getType().FullName
+

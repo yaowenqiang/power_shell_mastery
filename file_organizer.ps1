@@ -1,9 +1,9 @@
 $errorLogPath = "file_organizer_error_log.txt"
 if (!(Test-path $errorLogPath)) {
     Write-Host "Creating error log file at $errorLogPath"
-    [void](New-Item -Path $errorLogPath -ItemType File -WhatIf -ErrorAction Stop)
+    [void](New-Item -Path $errorLogPath -ItemType File -ErrorAction Stop)
 }
-Add-Content -Path ErrorLogPath -Value "$(Get-Date) -  File Organization started!"
+Add-Content -Path $errorLogPath -Value "$(Get-Date) - File Organization started!"
 function LogError {
     param (
         # must be ErrorRecord: [string] would coerce $_ to its message text, making .Exception null
@@ -54,7 +54,7 @@ function Move-FileToCategory($file, $category) {
         $destinationFolder = "$PWD/$category" 
 
         if (!(Test-path $destinationFolder)) {
-            [void](New-Item -Path $destinationFolder -ItemType Directory -WhatIf -ErrorAction Stop)
+            [void](New-Item -Path $destinationFolder -ItemType Directory -ErrorAction Stop)
         }
         # use .Name: "$file" would interpolate the full path into the destination
         $destinationPath = "$destinationFolder/$($file.Name)"
@@ -64,7 +64,7 @@ function Move-FileToCategory($file, $category) {
 
     }
     catch {
-        LogError -ErrorRecord $_ -CustomMessage"Error Movingfile $($file.Name) to $category"
+        LogError -ErrorRecord $_ -CustomMessage "Error moving file $($file.Name) to $category"
         $errorMessage = "$(Get-Date) - Error moving file $($file.Name) to $category : $_"
         Add-Content -Path $errorLogPath -Value $errorMessage
         Write-Warning "Failed to move $($file.Name). check error log for details."
@@ -92,7 +92,7 @@ foreach ($file in Get-ChildItem -ErrorAction SilentlyContinue) {
 
     }
     catch {
-        LogError -ErrorRecord $_ -CustomMessage"Error processing file $($file.Name)"
+        LogError -ErrorRecord $_ -CustomMessage "Error processing file $($file.Name)"
         $errorMessage = "$(Get-Date) - Error processing file $($file.Name) : $_"
         Add-Content -Path $errorLogPath -Value $errorMessage
         Write-Warning "Failed to process $($file.Name). check error log for details."
@@ -108,7 +108,8 @@ foreach ($extension in $unknownExtensions.Keys) {
 }
 
 if (Test-Path $errorLogPath) {
-    $errorCount = (Get-Content $errorLogPath).Count
+    # count only error lines; the log also holds the start/completed markers
+    $errorCount = (Get-Content $errorLogPath | Where-Object { $_ -match ' - Error ' }).Count
     if ($errorCount -gt 0) { 
         Write-Host "`nEncountered $errorCount error(s). Check $ErrorLogPath for details."
     }
@@ -120,4 +121,4 @@ else {
     Write-Host "`nNo error log encountered.File organization completed without any logged errors."
 }
 
-Add-Content -Path ErrorLogPath -Value "$(Get-Date) -  File Organization completed!"
+Add-Content -Path $errorLogPath -Value "$(Get-Date) - File Organization completed!"
