@@ -318,3 +318,29 @@ Get-ChildItem $appDataDir
 
 Get-Content -Path "$appDataDir\config.txt"
 ```
+
+```ps1
+
+($Error[0]).Exception.GetType().Fullname
+($Error[0]).Exception.Message
+
+($Error[0]).InvocationInfo | Get-Member
+$Error[0].InvocationInfo
+$Error[0].CategoryInfo
+$Error[0].Exception
+$Error[0].Exception.Message
+$Error[0].Exception.GetType().FullName
+$Error[0].Exception.StackTrace
+$Error[0].Exception.TargetSite
+$Error[0].Exception.Source
+$Error[0].Exception.Data
+$Error[0].Exception.HelpLink
+$Error[0].Exception.HResult
+$Error[0].Exception.InnerException
+$Error[0].Exception.Data
+$Error[0].Exception.Data.Keys
+$Error[0].Exception.Data.Values
+$Error[0].Exception.Data.Count
+
+
+```

@@ -1,8 +1,12 @@
 $ErrorActionPreference = "Stop"
 
-$configPath = "c:\ImportantApp\settings.txt"
-$backupFolder = "c:\Backups"
-$errorLogPath = “c:\Logs\backup_error_log.txt"
+# $configPath = "c:\ImportantApp\settings.txt"
+# $backupFolder = "c:\Backups"
+# $errorLogPath = “c:\Logs\backup_error_log.txt"
+
+$configPath = "settings.txt"
+$backupFolder = "Backups"
+$errorLogPath = “backup_error_log.txt"
 
 if (!(Test-Path $errorLogPath)) {
     Write-Host "Creating Error Log file..."
@@ -13,6 +17,29 @@ if (!(Test-Path $errorLogPath)) {
 #     exit 1
 # }
 
+function LogError {
+    param (
+        # must be ErrorRecord: [string] would coerce $_ to its message text, making .Exception null
+        [System.Management.Automation.ErrorRecord]$ErrorRecord,
+        [string]$CustomMessage
+    )
+    $ErrorDetails = @"
+    Date: $(Get-Date)
+    Custom Message: $CustomMessage
+    Error Message: $($ErrorRecord.Exception.Message)
+    Error Type: $($ErrorRecord.Exception.GetType().FullName)
+    Stack Trace: $($ErrorRecord.ScriptStackTrace)
+    Script Line: $($ErrorRecord.InvocationInfo.ScriptLineNumber)
+    Script Name: $($ErrorRecord.InvocationInfo.ScriptName)
+    Invocation Name: $($ErrorRecord.InvocationInfo.InvocationName)
+    Position Message: $($ErrorRecord.InvocationInfo.PositionMessage)
+    Stack Trace: $($ErrorRecord.ScriptStackTrace)
+"@
+    Add-Content -Path $errorLogPath -Value $ErrorDetails
+    Write-Host "Error logged, See $errorLogPath for details"
+}
+
+
 try {
     if (-not (Test-Path $configPath)) {
         throw "Config file not found at $configPath"
@@ -22,40 +49,31 @@ try {
     } 
 }
 catch {
+    LogError -ErrorRecord $_ -CustomMessage "Error occurred during initial checks"
     $errorMessage = "$(Get-Date) - Error during initial checks: $($Error[0])"
-    Add-Content -Path $errorLogPath -Value $errorMessage
+    # Add-Content -Path $errorLogPath -Value $errorMessage
     Write-Error "Error during initial checks: $($Error[0])"
     Exit 1
 }
 try {
     $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
     $configObject = Get-ChildItem $configPath
-    # $($expr) evaluates an expression; ${name} would look for a variable literally named that
-    $backupPath = "$backupFolder\$($configObject.BaseName)_$timestamp$($configObject.Extension)"
-    Copy-Item -Path $configPath -Destination $backupPath 
+    # forward slash works on Windows and mac/Linux ("\" is not a separator on mac/Linux)
+    $backupPath = "$backupFolder/$($configObject.BaseName)_$timestamp$($configObject.Extension)"
+    Copy-Item -Path $configPath -Destination $backupPath
     Write-Host "Backup created successfully: $backupPath"
-
 }
 catch {
-    # Write-Warning "Failed to backup using Copy-Item， Attempting alternative method"
-    # $content = Get-Content -Path $configPath -Raw
-    # $content | Set-Content -Path $backupPath
-    # Write-Host "Backup created successfully using alternative method at: $backupPath"
-    $errorMessage = "$(Get-Date) - Failed to create backup using Copy-Item: $($Error[0])"
-    Add-Content -Path $errorLogPath -Value $errorMessage
-    Write-Warning "Failed to backup using Copy-Item， Attempting alternative method"
-}
-finally {
+    LogError -ErrorRecord $_ -CustomMessage "Error occurred during backup creation"
+    Write-Warning "Failed to backup using Copy-Item. Attempting alternative method"
     try {
-        Write-Warning "Failed to backup using Copy-Item， Attempting alternative method"
         $content = Get-Content -Path $configPath -Raw
         $content | Set-Content -Path $backupPath
         Write-Host "Backup created successfully using alternative method at: $backupPath"
     }
     catch {
-        $errorMessage = "$(Get-Date) - All backup attempts failed $($Error[0])"
-        Add-Content -Path $errorLogPath -Value $errorMessage
-        Write-Error "All backup attempts failed, Error: $($Error[0])"
+        LogError -ErrorRecord $_ -CustomMessage "Error occurred during backup creation using alternative method"
+        Write-Error "All backup attempts failed"
         Exit 1
     }
 }
