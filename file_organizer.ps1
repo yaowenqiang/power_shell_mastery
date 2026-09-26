@@ -73,7 +73,8 @@ function Move-FileToCategory($file, $category) {
 }
 
 $categorizedCount = 0
-foreach ($file in Get-ChildItem -ErrorAction SilentlyContinue) {
+# exclude the log file itself, otherwise the organizer moves it into Documents
+foreach ($file in (Get-ChildItem -Exclude $errorLogPath -ErrorAction SilentlyContinue)) {
     try {
         $extension = $file.Extension.ToLower()
         if ($categoryMap.ContainsKey($extension)) {
