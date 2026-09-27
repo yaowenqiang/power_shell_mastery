@@ -357,7 +357,7 @@ $Error[0].Exception.Data.Count
 > Get-ChildItem Desktop -Recurse -File | ForEach-Object { $_.IsReadOnly = $true}
 
 > Get-ChildItem Desktop -Recurse -File  -Filter *.txt| ForEach-Object { $_.IsReadOnly = $true}
-j
+
 > Get-ChildItem Desktop\*.txt| ForEach-Object { $_.LastWriteTime = (Get-Date)}
 
 > Get-ChildItem Desktop\*.txt| ForEach-Object { $_.LastWriteTime = (Get-Date "2023-06-15 09:00:00")}
@@ -371,11 +371,11 @@ j
 > Get-ChildItem Desktop | Where-Object { $_.length -gt 1MB -and $_.Extension -eq ".txt" }
 
 
-> Get-ChildItem -Path Desktop -Recurse | Where-Object {$_.LastWriteTime -lt {Get-Date}.AddDays(-30)} | ForEach-Object {Remove-Item $_.FullName -WhatIf} 
+> Get-ChildItem -Path Desktop -Recurse | Where-Object {$_.LastWriteTime -lt (Get-Date).AddDays(-30)} | ForEach-Object {Remove-Item $_.FullName -WhatIf}
 
-> Get-ChildItem -Path Desktop -Recurse | Where-Object {$_.LastWriteTime -gt {Get-Date}.AddHours(-24)} | Select-Object name, LastWriteTime, Length 
+> Get-ChildItem -Path Desktop -Recurse | Where-Object {$_.LastWriteTime -gt (Get-Date).AddHours(-24)} | Select-Object name, LastWriteTime, Length
 
-> Get-ChildItem -Path Desktop -Recurse | Where-Object {$_.LastWriteTime -gt {Get-Date}.AddHours(-24) -and $_.length -gt 1MB} | Select-Object name, LastWriteTime, Length 
+> Get-ChildItem -Path Desktop -Recurse | Where-Object {$_.LastWriteTime -gt (Get-Date).AddHours(-24) -and $_.length -gt 1MB} | Select-Object name, LastWriteTime, Length
 
 > Get-ChildItem -File | Select-Object name, LastWriteTime,Length
 
