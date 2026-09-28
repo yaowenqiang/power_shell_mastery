@@ -381,3 +381,21 @@ $Error[0].Exception.Data.Count
 
 
 > Get-ChildItem -File | Where-Object {$_.length -gt 1MB}
+
+> "Desktop" | Get-Item
+
+> "Desktop" | Get-Member
+
+> Get-Help Get-ChildItem -Full
+
+> Get-Process -Name notepad | Stop-Process -WhatIf
+
+> Get-Process | Where-Object {$_.CPU -gt 10 }| Select-Object Name, ID | Sort-Object Name
+
+> $users =  @([PSCustomObject]@{Name = "Jone Doe"; Description = "desc"}, [PSCustomObject]@{"Name"="aaa";"Description" = "desc"})
+
+> $users | New-LocalUser -NoPassword -WhatIf
+
+> $users | Get-Member
+
+
