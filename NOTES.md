@@ -398,4 +398,10 @@ $Error[0].Exception.Data.Count
 
 > $users | Get-Member
 
+```ps1
+$Services = @([PSCustomObject]@{Name = "Spooler",StartupType = "Automatic"},[PSCustomObject]@{Name = "WinRM", StartupType = "Automatic"}) | Set-Service -WhatIf
 
+$Services = @([PSCustomObject]@{Name = "Spooler",StartupType = "Automatic", DisplayName="Print Spooler"},[PSCustomObject]@{Name = "WinRM", StartupType = "Automatic", DisplayName="Windows Remote Management (WS-Management)"}) | Set-Service -WhatIf
+Get-Help Set-Service -Full
+
+```
