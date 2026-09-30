@@ -425,3 +425,14 @@ $count = (Get-ChildItem -Path $path -Filter $filter).Count
 Write-Host ("Number of '$filter' files: $count")
 
 ```
+
+```ps1
+Get-ChildItem | Select-Object Name, @{Name="SizeMB";Expression={$_.length / 1MB}}
+
+Get-ChildItem | Select-Object Name, @{Name="SizeMB";Expression={"{0:N2}" -f ($_.length / 1MB)}}
+
+
+Get-Process | Select-Object Name,Id, @{Name="Age";Expression={(Get-Date) - $_.StartTime}}
+
+
+```
