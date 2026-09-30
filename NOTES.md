@@ -405,3 +405,23 @@ $Services = @([PSCustomObject]@{Name = "Spooler",StartupType = "Automatic", Disp
 Get-Help Set-Service -Full
 
 ```
+
+```ps1
+1..5 | ForEach-Object -Begin {$sum=0} -Process {$sum +=  $_} -End {$sum}
+
+ Get-Process | ForEach-Object -Begin {$total = 0} -Process {$total += $_.WorkingSet} -End {"Total Memory Usage: $($total /1MB) MB"}
+
+
+Get-ChildItem ./Desktop/ | ForEach-Object -Begin {$totalSize = 0; $filecount=0} -Process {$totalSize += $_.Length;$fileCount++} -End {Write-Host ("Processed {0} files with a total size of {1:N2}  Megabytes." -f $fileCount, ($totalSize /1MB))}
+
+
+Get-ChildItem -Path (Read-Host "Enter th directory path") -Filter (Read-Host "Enter a pattern to filter by (e.g., *.txt)") | ForEach-Object -Begin {$count=0} -Process {$count++} -End {Write-Host ("Number of $extension file count is {0}" -f $count)}
+
+
+$filter = Read-Host "Enter a pattern to filter by (e.g., *.txt)"
+$path   = Read-Host "Enter the directory path"
+
+$count = (Get-ChildItem -Path $path -Filter $filter).Count
+Write-Host ("Number of '$filter' files: $count")
+
+```
