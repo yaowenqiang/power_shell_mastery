@@ -438,6 +438,6 @@ Get-ChildItem | Select-Object Name, @{Name="DaysSinceModified";Expression={((Get
 
 Get-ChildItem | Select-Object Name, @{Name="LastModified";Expression={$days = ((Get-Date) - $_.LastWriteTime).Days; if ($days -eq 0 ) { "Today" } elseif ($days -eq 1) { "Yesterday" } else { "$days days ago" } }}
 
-Get-ChildItem | Select-Object Name, @{Name="LastModified";Expression={$days = ((Get-Date) - $_.LastWriteTime).Days; if ($days -eq 0 ) { "Today" } elseif ($days -eq 1) { "Yesterday" } else { "$days days ago" } }} | Sort-Object {$_.LastModified -replace "Today", "0" -replace "Yesterday", "1","Days ago", ""}
+Get-ChildItem | Select-Object Name, @{Name="LastModified";Expression={$days = ((Get-Date) - $_.LastWriteTime).Days; if ($days -eq 0 ) { "Today" } elseif ($days -eq 1) { "Yesterday" } else { "$days days ago" } }} | Sort-Object {$_.LastModified -replace "Today", "0" -replace "Yesterday", "1" -replace "Days ago", ""}
 
 ```
