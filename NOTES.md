@@ -434,5 +434,10 @@ Get-ChildItem | Select-Object Name, @{Name="SizeMB";Expression={"{0:N2}" -f ($_.
 
 Get-Process | Select-Object Name,Id, @{Name="Age";Expression={(Get-Date) - $_.StartTime}}
 
+Get-ChildItem | Select-Object Name, @{Name="DaysSinceModified";Expression={((Get-Date) - $_.LastWriteTime).Days}}
+
+Get-ChildItem | Select-Object Name, @{Name="LastModified";Expression={$days = ((Get-Date) - $_.LastWriteTime).Days; if ($days -eq 0 ) { "Today" } elseif ($days -eq 1) { "Yesterday" } else { "$days days ago" } }}
+
+Get-ChildItem | Select-Object Name, @{Name="LastModified";Expression={$days = ((Get-Date) - $_.LastWriteTime).Days; if ($days -eq 0 ) { "Today" } elseif ($days -eq 1) { "Yesterday" } else { "$days days ago" } }} | Sort-Object {$_.LastModified -replace "Today", "0" -replace "Yesterday", "1","Days ago", ""}
 
 ```
